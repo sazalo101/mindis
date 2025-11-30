@@ -14,6 +14,32 @@ $(document).ready(function () {
         setupEventListeners();
         loadDashboardData();
         updateCharCount();
+        initDarkMode();
+    }
+
+    // ===================================
+    // Dark Mode
+    // ===================================
+
+    function initDarkMode() {
+        // Check localStorage for saved theme preference
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            $('body').addClass('dark-mode');
+            updateThemeIcon();
+        }
+    }
+
+    function toggleDarkMode() {
+        $('body').toggleClass('dark-mode');
+        const isDark = $('body').hasClass('dark-mode');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        updateThemeIcon();
+    }
+
+    function updateThemeIcon() {
+        const isDark = $('body').hasClass('dark-mode');
+        $('#theme-toggle .theme-icon').text(isDark ? '☀️' : '🌙');
     }
 
     // ===================================
@@ -23,6 +49,9 @@ $(document).ready(function () {
     function setupEventListeners() {
         // Sidebar toggle
         $('#sidebar-toggle').on('click', toggleSidebar);
+
+        // Theme toggle
+        $('#theme-toggle').on('click', toggleDarkMode);
 
         // Tab navigation
         $('.nav-item').on('click', function () {
