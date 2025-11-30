@@ -2,7 +2,7 @@ import requests
 import json
 from datetime import datetime
 
-OPENROUTER_API_KEY = "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"
+OPENROUTER_API_KEY = ""
 API_URL = "https://openrouter.ai/api/v1/chat/completions"
 MODEL = "x-ai/grok-4.1-fast:free"
 
