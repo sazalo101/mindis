@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Mindi</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="/static/css/auth.css">
+</head>
+
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h1 class="auth-logo gradient-text">Mindi</h1>
+                <p class="auth-tagline">Welcome back to your mental wellness journey</p>
+            </div>
+
+            <form id="login-form" class="auth-form">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required autocomplete="username">
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required autocomplete="current-password">
+                </div>
+
+                <div class="error-message" id="error-message" style="display: none;"></div>
+
+                <button type="submit" class="btn btn-primary btn-block">
+                    <span class="btn-text">Sign In</span>
+                    <span class="btn-loader" style="display: none;">Signing in...</span>
+                </button>
+            </form>
+
+            <div class="auth-footer">
+                <p>Don't have an account? <a href="/register" class="auth-link">Create one</a></p>
+            </div>
+        </div>
+
+        <div class="auth-decoration">
+            <div class="decoration-circle circle-1"></div>
+            <div class="decoration-circle circle-2"></div>
+            <div class="decoration-circle circle-3"></div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $('#login-form').on('submit', function (e) {
+                e.preventDefault();
+
+                const username = $('#username').val().trim();
+                const password = $('#password').val();
+
+                // Hide previous errors
+                $('#error-message').hide();
+
+                // Show loading
+                $('#login-form button').prop('disabled', true);
+                $('#login-form .btn-text').hide();
+                $('#login-form .btn-loader').show();
+
+                $.ajax({
+                    url: '/api/login',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ username, password }),
+                    success: function (response) {
+                        if (response.success) {
+                            window.location.href = '/dashboard';
+                        }
+                    },
+                    error: function (xhr) {
+                        const error = xhr.responseJSON?.error || 'Login failed. Please try again.';
+                        $('#error-message').text(error).fadeIn();
+
+                        // Reset button
+                        $('#login-form button').prop('disabled', false);
+                        $('#login-form .btn-text').show();
+                        $('#login-form .btn-loader').hide();
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

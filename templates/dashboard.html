@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Mindi</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="/static/css/dashboard.css">
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h1 class="sidebar-logo gradient-text">Mindi</h1>
+            <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Toggle sidebar">
+                <span class="toggle-icon">☰</span>
+            </button>
+        </div>
+
+        <nav class="sidebar-nav">
+            <button class="nav-item active" data-tab="overview">
+                <span class="nav-icon">📊</span>
+                <span class="nav-label">Overview</span>
+            </button>
+            <button class="nav-item" data-tab="mood">
+                <span class="nav-icon">😊</span>
+                <span class="nav-label">Mood Tracker</span>
+            </button>
+            <button class="nav-item" data-tab="journal">
+                <span class="nav-icon">📝</span>
+                <span class="nav-label">Journal</span>
+            </button>
+            <button class="nav-item" data-tab="insights">
+                <span class="nav-icon">💡</span>
+                <span class="nav-label">AI Insights</span>
+            </button>
+            <button class="nav-item" data-tab="analytics">
+                <span class="nav-icon">📈</span>
+                <span class="nav-label">Analytics</span>
+            </button>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="user-info">
+                <div class="user-avatar">{{ user.username[0].upper() }}</div>
+                <div class="user-details">
+                    <div class="user-name">{{ user.username }}</div>
+                    <div class="user-email">{{ user.email }}</div>
+                </div>
+            </div>
+            <button class="btn-logout" id="logout-btn">
+                <span class="logout-icon">🚪</span>
+                <span class="logout-text">Logout</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Overview Tab -->
+        <div class="tab-content active" id="tab-overview">
+            <div class="page-header">
+                <h2 class="page-title">Welcome back, {{ user.username }}! 👋</h2>
+                <p class="page-subtitle">Here's your emotional wellness overview</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">😊</div>
+                    <div class="stat-info">
+                        <div class="stat-value" id="overview-moods">0</div>
+                        <div class="stat-label">Moods Tracked</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📝</div>
+                    <div class="stat-info">
+                        <div class="stat-value" id="overview-entries">0</div>
+                        <div class="stat-label">Journal Entries</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">💡</div>
+                    <div class="stat-info">
+                        <div class="stat-value" id="overview-insights">0</div>
+                        <div class="stat-label">AI Insights</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="overview-grid">
+                <div class="overview-section">
+                    <h3 class="section-title">Recent Insights</h3>
+                    <div id="overview-insights-list" class="insights-preview"></div>
+                </div>
+
+                <div class="overview-section">
+                    <h3 class="section-title">Mood Trends</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="overview-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mood Tracker Tab -->
+        <div class="tab-content" id="tab-mood">
+            <div class="page-header">
+                <h2 class="page-title">Mood Tracker 😊</h2>
+                <p class="page-subtitle">How are you feeling today?</p>
+            </div>
+
+            <div class="content-card">
+                <div class="mood-grid">
+                    <button class="mood-btn" data-mood="happy">
+                        <span class="mood-emoji">😊</span>
+                        <span class="mood-label">Happy</span>
+                    </button>
+                    <button class="mood-btn" data-mood="calm">
+                        <span class="mood-emoji">😌</span>
+                        <span class="mood-label">Calm</span>
+                    </button>
+                    <button class="mood-btn" data-mood="energetic">
+                        <span class="mood-emoji">🤩</span>
+                        <span class="mood-label">Energetic</span>
+                    </button>
+                    <button class="mood-btn" data-mood="sad">
+                        <span class="mood-emoji">😢</span>
+                        <span class="mood-label">Sad</span>
+                    </button>
+                    <button class="mood-btn" data-mood="anxious">
+                        <span class="mood-emoji">😰</span>
+                        <span class="mood-label">Anxious</span>
+                    </button>
+                    <button class="mood-btn" data-mood="angry">
+                        <span class="mood-emoji">😠</span>
+                        <span class="mood-label">Angry</span>
+                    </button>
+                    <button class="mood-btn" data-mood="tired">
+                        <span class="mood-emoji">😴</span>
+                        <span class="mood-label">Tired</span>
+                    </button>
+                    <button class="mood-btn" data-mood="neutral">
+                        <span class="mood-emoji">😐</span>
+                        <span class="mood-label">Neutral</span>
+                    </button>
+                </div>
+
+                <div class="mood-details" id="mood-details" style="display: none;">
+                    <div class="intensity-slider">
+                        <label for="mood-intensity">Intensity: <span id="intensity-value">5</span>/10</label>
+                        <input type="range" id="mood-intensity" min="1" max="10" value="5">
+                    </div>
+
+                    <textarea id="mood-notes" placeholder="Add a note about how you're feeling... (optional)"
+                        rows="3"></textarea>
+
+                    <button class="btn btn-primary" id="save-mood">
+                        <span class="btn-text">Save Mood</span>
+                        <span class="btn-loader" style="display: none;">Saving...</span>
+                    </button>
+                </div>
+
+                <div class="ai-suggestion" id="ai-suggestion" style="display: none;">
+                    <div class="suggestion-icon">💡</div>
+                    <p class="suggestion-text" id="suggestion-text"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Journal Tab -->
+        <div class="tab-content" id="tab-journal">
+            <div class="page-header">
+                <h2 class="page-title">Journal 📝</h2>
+                <p class="page-subtitle">Express your thoughts freely</p>
+            </div>
+
+            <div class="content-card">
+                <textarea id="journal-content"
+                    placeholder="What's on your mind today? Write freely about your thoughts, feelings, and experiences..."
+                    rows="10"></textarea>
+
+                <div class="journal-actions">
+                    <div class="char-count">
+                        <span id="char-count">0</span> characters
+                    </div>
+                    <button class="btn btn-primary" id="save-journal">
+                        <span class="btn-text">Save Entry</span>
+                        <span class="btn-loader" style="display: none;">Saving...</span>
+                    </button>
+                </div>
+
+                <div class="ai-response" id="ai-response" style="display: none;">
+                    <div class="response-header">
+                        <span class="response-icon">🤗</span>
+                        <span class="response-title">Mindi's Response</span>
+                    </div>
+                    <p class="response-text" id="response-text"></p>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h3 class="subsection-title">Recent Entries</h3>
+                <div id="entries-list" class="entries-list">
+                    <p class="empty-state">No journal entries yet. Start writing!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Insights Tab -->
+        <div class="tab-content" id="tab-insights">
+            <div class="page-header">
+                <h2 class="page-title">AI Insights 💡</h2>
+                <p class="page-subtitle">Discover patterns in your emotional journey</p>
+            </div>
+
+            <button class="btn btn-secondary btn-large" id="generate-insights">
+                <span class="btn-text">✨ Generate New Insight</span>
+                <span class="btn-loader" style="display: none;">Analyzing...</span>
+            </button>
+
+            <div id="insights-container" class="insights-grid">
+                <p class="empty-state">Click "Generate New Insight" to receive personalized guidance.</p>
+            </div>
+        </div>
+
+        <!-- Analytics Tab -->
+        <div class="tab-content" id="tab-analytics">
+            <div class="page-header">
+                <h2 class="page-title">Analytics 📈</h2>
+                <p class="page-subtitle">Visualize your emotional patterns</p>
+            </div>
+
+            <div class="content-card">
+                <h3 class="subsection-title">Mood History</h3>
+                <div class="chart-wrapper">
+                    <canvas id="mood-chart"></canvas>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h3 class="subsection-title">Mood Statistics (Last 7 Days)</h3>
+                <div id="mood-stats" class="mood-stats"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- JavaScript -->
+    <script src="/static/js/dashboard.js"></script>
+</body>
+
+</html>

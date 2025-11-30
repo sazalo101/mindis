@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mindi - Your Mental Health Companion</title>
+    <meta name="description"
+        content="Track moods, journal efficiently, and gain personalized insights into your emotional well-being with AI-powered support.">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <!-- Chart.js for mood visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body>
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    <span class="gradient-text">Mindi</span>
+                </h1>
+                <p class="hero-subtitle">Your compassionate AI companion for emotional well-being</p>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <span class="stat-number" id="total-moods">0</span>
+                        <span class="stat-label">Moods Tracked</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="total-entries">0</span>
+                        <span class="stat-label">Journal Entries</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="total-insights">0</span>
+                        <span class="stat-label">AI Insights</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+
+            <!-- Mood Tracker Section -->
+            <section class="section mood-section">
+                <div class="section-header">
+                    <h2 class="section-title">How are you feeling?</h2>
+                    <p class="section-subtitle">Select your current mood and intensity</p>
+                </div>
+
+                <div class="mood-selector">
+                    <div class="mood-grid">
+                        <button class="mood-btn" data-mood="happy" aria-label="Happy">
+                            <span class="mood-emoji">😊</span>
+                            <span class="mood-label">Happy</span>
+                        </button>
+                        <button class="mood-btn" data-mood="calm" aria-label="Calm">
+                            <span class="mood-emoji">😌</span>
+                            <span class="mood-label">Calm</span>
+                        </button>
+                        <button class="mood-btn" data-mood="energetic" aria-label="Energetic">
+                            <span class="mood-emoji">🤩</span>
+                            <span class="mood-label">Energetic</span>
+                        </button>
+                        <button class="mood-btn" data-mood="sad" aria-label="Sad">
+                            <span class="mood-emoji">😢</span>
+                            <span class="mood-label">Sad</span>
+                        </button>
+                        <button class="mood-btn" data-mood="anxious" aria-label="Anxious">
+                            <span class="mood-emoji">😰</span>
+                            <span class="mood-label">Anxious</span>
+                        </button>
+                        <button class="mood-btn" data-mood="angry" aria-label="Angry">
+                            <span class="mood-emoji">😠</span>
+                            <span class="mood-label">Angry</span>
+                        </button>
+                        <button class="mood-btn" data-mood="tired" aria-label="Tired">
+                            <span class="mood-emoji">😴</span>
+                            <span class="mood-label">Tired</span>
+                        </button>
+                        <button class="mood-btn" data-mood="neutral" aria-label="Neutral">
+                            <span class="mood-emoji">😐</span>
+                            <span class="mood-label">Neutral</span>
+                        </button>
+                    </div>
+
+                    <div class="mood-details" id="mood-details" style="display: none;">
+                        <div class="intensity-slider">
+                            <label for="mood-intensity">Intensity: <span id="intensity-value">5</span>/10</label>
+                            <input type="range" id="mood-intensity" min="1" max="10" value="5">
+                        </div>
+
+                        <textarea id="mood-notes" placeholder="Add a quick note about how you're feeling... (optional)"
+                            rows="3"></textarea>
+
+                        <button class="btn btn-primary" id="save-mood">
+                            <span class="btn-text">Save Mood</span>
+                            <span class="btn-loader" style="display: none;">Saving...</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="ai-suggestion" id="ai-suggestion" style="display: none;">
+                    <div class="suggestion-icon">💡</div>
+                    <p class="suggestion-text" id="suggestion-text"></p>
+                </div>
+            </section>
+
+            <!-- Journal Section -->
+            <section class="section journal-section">
+                <div class="section-header">
+                    <h2 class="section-title">Journal Your Thoughts</h2>
+                    <p class="section-subtitle">Express yourself freely - your thoughts are safe here</p>
+                </div>
+
+                <div class="journal-editor">
+                    <textarea id="journal-content"
+                        placeholder="What's on your mind today? Write freely about your thoughts, feelings, and experiences..."
+                        rows="8"></textarea>
+
+                    <div class="journal-actions">
+                        <div class="char-count">
+                            <span id="char-count">0</span> characters
+                        </div>
+                        <button class="btn btn-primary" id="save-journal">
+                            <span class="btn-text">Save Entry</span>
+                            <span class="btn-loader" style="display: none;">Saving...</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="ai-response" id="ai-response" style="display: none;">
+                    <div class="response-header">
+                        <span class="response-icon">🤗</span>
+                        <span class="response-title">Mindi's Response</span>
+                    </div>
+                    <p class="response-text" id="response-text"></p>
+                </div>
+
+                <!-- Recent Entries -->
+                <div class="recent-entries">
+                    <h3 class="subsection-title">Recent Entries</h3>
+                    <div id="entries-list" class="entries-list">
+                        <p class="empty-state">No journal entries yet. Start writing to see them here!</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Insights Section -->
+            <section class="section insights-section">
+                <div class="section-header">
+                    <h2 class="section-title">AI-Powered Insights</h2>
+                    <p class="section-subtitle">Discover patterns and gain deeper understanding</p>
+                </div>
+
+                <button class="btn btn-secondary" id="generate-insights">
+                    <span class="btn-text">✨ Generate New Insight</span>
+                    <span class="btn-loader" style="display: none;">Analyzing...</span>
+                </button>
+
+                <div id="insights-container" class="insights-grid">
+                    <p class="empty-state">Click "Generate New Insight" to receive personalized guidance based on your
+                        mood and journal data.</p>
+                </div>
+            </section>
+
+            <!-- Mood History Chart -->
+            <section class="section chart-section">
+                <div class="section-header">
+                    <h2 class="section-title">Your Emotional Journey</h2>
+                    <p class="section-subtitle">Visualize your mood patterns over time</p>
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="mood-chart"></canvas>
+                </div>
+
+                <div class="mood-stats" id="mood-stats">
+                    <!-- Stats will be populated by JavaScript -->
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p class="footer-text">
+                <strong>Mindi</strong> - Your journey to emotional well-being starts here
+            </p>
+            <p class="footer-note">
+                Remember: If you're experiencing a mental health crisis, please reach out to a professional or call a
+                crisis helpline.
+            </p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="/static/js/main.js"></script>
+</body>
+
+</html>

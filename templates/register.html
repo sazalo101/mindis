@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Mindi</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="/static/css/auth.css">
+</head>
+
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h1 class="auth-logo gradient-text">Mindi</h1>
+                <p class="auth-tagline">Start your journey to emotional well-being</p>
+            </div>
+
+            <form id="register-form" class="auth-form">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required autocomplete="username">
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required autocomplete="email">
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required autocomplete="new-password"
+                        minlength="6">
+                    <small class="form-hint">At least 6 characters</small>
+                </div>
+
+                <div class="error-message" id="error-message" style="display: none;"></div>
+                <div class="success-message" id="success-message" style="display: none;"></div>
+
+                <button type="submit" class="btn btn-primary btn-block">
+                    <span class="btn-text">Create Account</span>
+                    <span class="btn-loader" style="display: none;">Creating account...</span>
+                </button>
+            </form>
+
+            <div class="auth-footer">
+                <p>Already have an account? <a href="/" class="auth-link">Sign in</a></p>
+            </div>
+        </div>
+
+        <div class="auth-decoration">
+            <div class="decoration-circle circle-1"></div>
+            <div class="decoration-circle circle-2"></div>
+            <div class="decoration-circle circle-3"></div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $('#register-form').on('submit', function (e) {
+                e.preventDefault();
+
+                const username = $('#username').val().trim();
+                const email = $('#email').val().trim();
+                const password = $('#password').val();
+
+                // Hide previous messages
+                $('#error-message').hide();
+                $('#success-message').hide();
+
+                // Validation
+                if (password.length < 6) {
+                    $('#error-message').text('Password must be at least 6 characters').fadeIn();
+                    return;
+                }
+
+                // Show loading
+                $('#register-form button').prop('disabled', true);
+                $('#register-form .btn-text').hide();
+                $('#register-form .btn-loader').show();
+
+                $.ajax({
+                    url: '/api/register',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ username, email, password }),
+                    success: function (response) {
+                        if (response.success) {
+                            $('#success-message').text('Account created! Redirecting...').fadeIn();
+                            setTimeout(() => {
+                                window.location.href = '/dashboard';
+                            }, 1000);
+                        }
+                    },
+                    error: function (xhr) {
+                        const error = xhr.responseJSON?.error || 'Registration failed. Please try again.';
+                        $('#error-message').text(error).fadeIn();
+
+                        // Reset button
+                        $('#register-form button').prop('disabled', false);
+                        $('#register-form .btn-text').show();
+                        $('#register-form .btn-loader').hide();
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
